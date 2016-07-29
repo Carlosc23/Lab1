@@ -10,6 +10,7 @@
 /*--Seccion de datos*/
 .data
 .align 2
+.global vector
 /***************************************************************** */
 Bienvenida:			.asciz "¡Bienvenid@ al programa! \n" 
 Instrucciones: 		.asciz "Este programa genera numeros aleatorios y le muestra maximos y minimos. \nIngrese la semilla\n"
@@ -47,6 +48,19 @@ main:
 	mov r1,#5
 	ldr r2,= semilla
 	ldr r2,[r2]
+	bl lfsr
+
+	/* Imprimir vector */
+	mov r6,#0
+	loop2:
+		cmp r6,#5
+		beq end
+		ldr r1, [r0, #4]
+		push {r0}
+		bl printf
+		pop {r0}
+		add r6,#1
+		b loop2
 	
 
 end:
