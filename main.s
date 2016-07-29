@@ -7,31 +7,37 @@
    Laboratorio1
    ***************************************************************** */
 
+/*--Seccion de datos*/
+.data
 .align 2
-@@ Variables de inicio 
-***************************************************************** */
-Bienvenida:.asciz "¡Bienvenid@ al programa! " 
-Instrucciones: .asciz "Este programa calcula el numero entero mayor de 10 que son ingresados por el usuario"
-***************************************************************** */--
-@@ Codigo de assembler: se coloca en la seccion .text
-	.text
-	.align		2
-	.global		main
-	.type		main,%function
- /* ***************************************************************** ***************************************************************** */
-@@ main
+/***************************************************************** */
+Bienvenida:			.asciz "¡Bienvenid@ al programa! \n" 
+Instrucciones: 		.asciz "Este programa genera numeros aleatorios y le muestra maximos y minimos. \nIngrese la semilla\n"
+intEntrada:			.word 0
+formato:			.asciz "%d"
+/***************************************************************** */
+
+/*--Seccion de codigo*/
+.text
+
+.align 2
+.global main
 main:
-	@@ Grabar registro de enlace en la pila
-	stmfd	sp!, {lr}
-	ldr r0,=Bienvenida @@ Mensaje de inicio
-	bl puts
-	ldr r0,=Instrucciones @@ Instrucciones
-	bl puts
-	ldr r0, =vector
-	bl leer	@@Subrutina para ingreso
+	stmfd   sp!, {lr}
+
+	ldr r0,= Bienvenida
+	bl printf
+	ldr r0,= Instrucciones
+	bl printf
+
+	ldr r8,= intEntrada
+	ldr r0,= formato
+	mov r1,r8
+	bl scanf
 	
-	fin:
+
+end:
 	mov r3,#0
-	mov r0,#0
-	ldmfd sp!,{lr}
+	mov r0,r3
+	ldmfd  sp!, {lr}
 	bx lr
