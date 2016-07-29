@@ -15,6 +15,7 @@ Bienvenida:			.asciz "¡Bienvenid@ al programa! \n"
 Instrucciones: 		.asciz "Este programa genera numeros aleatorios y le muestra maximos y minimos. \nIngrese la semilla\n"
 intEntrada:			.word 0
 formato:			.asciz "%d"
+formato2:			.asciz "Su semilla es: %d\n"
 /***************************************************************** */
 
 /*--Seccion de codigo*/
@@ -34,6 +35,11 @@ main:
 	ldr r0,= formato
 	mov r1,r8
 	bl scanf
+
+	ldr r2,= intEntrada
+	ldr r0,= formato2
+	ldr r1,[r2]
+	bl printf
 	
 
 end:
