@@ -29,6 +29,13 @@ leer:
 		pop {r0-r3}
 		push {r0-r3}
 		ldr r0, =entrada
-		bl scanf  
-	pop {pc}
+		bl scanf
+@@ Ciclo para cambiar de posicion el vector y hacer cuentas
+	seguir:
+		pop {r0-r3}
+		add r2, r2, #1
+		add r1, r1, #4
+		cmp r2, #10
+		bne ciclo2  
+	pop {pc}		
 @-------------------------------------------------------------------------------------------
