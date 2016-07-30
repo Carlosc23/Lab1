@@ -17,7 +17,8 @@ Instrucciones: 		.asciz "Este programa genera numeros aleatorios y le muestra ma
 semilla:			.word 0
 formato:			.asciz "%d"
 formato2:			.asciz "Su semilla es: %d\n"
-vector:				.space 5
+formato3:			.asciz "Su valor es: %d\n"
+vector:				.space 262144
 /***************************************************************** */
 
 /*--Seccion de codigo*/
@@ -45,22 +46,24 @@ main:
 
 	/* Mandar datos a lfsr */
 	ldr r0,= vector
-	mov r1,#5
+	mov r1,#32768
 	ldr r2,= semilla
 	ldr r2,[r2]
 	bl lfsr
 
-	/* Imprimir vector */
-	mov r6,#0
-	loop2:
-		cmp r6,#5
-		beq end
-		ldr r1, [r0, #4]
-		push {r0}
-		bl printf
-		pop {r0}
-		add r6,#1
-		b loop2
+	ldr r8,=vector
+		mov r6,#0
+		loops:
+			cmp r6,#32768
+			beq end
+
+			ldr r1,[r8]
+			ldr r0,=formato3
+			bl printf
+			add r8,#4
+			add r6,#1
+			b loops
+	
 	
 
 end:
