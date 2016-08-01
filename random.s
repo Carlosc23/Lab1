@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* ***************************************************************** 
    random.s
    Programa que...
@@ -11,14 +10,15 @@
 .data
 .align 2
 
-formato:			.asciz "Su numero es: %d\n"
+formato:			.asciz "Su numero es: %f\n"
+formatom:			.asciz "El numero es: %d\n"
 vec:				.word 0,0,0,0,0
 
 /*--Seccion de codigo*/
 .text
 
 .align 2
-.global lfsr
+.global lfsr,minimo,maximo,average,norm,imprimir, convertToFloat
 
 lfsr:
 	mov r9,lr /* guarda valor de lr en r9 */
@@ -28,7 +28,8 @@ lfsr:
 
 	/* genera numeros random y los aloja en vector */
 	loop:
-		cmp r6,#32768 /* compara si ya realizo las iteraciones necesarias */
+		/*cmp r6,#32768  compara si ya realizo las iteraciones necesarias */
+		cmp r6,#5
 		beq retorno
 		
 		movs r2,r2,lsr #1 /* shift a la derecha */
@@ -49,57 +50,31 @@ lfsr:
 
 	retorno:
 		mov pc, r9
-=======
-/* ***************************************************************** 
-   random.s
-   Programa que...
-   Autores: 
-   Carlos Calderon ,Carne: 15219
-   Gabriel Brolo ,Carne: 15105
-   Laboratorio1
-   ***************************************************************** */
 
-.data
-.align 2
+convertToFloat:
+	mov r9, lr
 
-formato:			.asciz "Su numero es: %d\n"
-vec:				.word 0,0,0,0,0
+	mov r6,#0 /*contador*/
+	mov r8,#0
 
-/*--Seccion de codigo*/
-.text
-
-.align 2
-.global lfsr,minimo,maximo,average,norm,imprimir
-
-lfsr:
-	mov r9,lr /* guarda valor de lr en r9 */
-	mov r6,#0 /* contador:		inicializar en 0 */
-	mov r7,r2 /* guardar valor original de semilla */
-	ldr r8,= vector
-
-	/* genera numeros random y los aloja en vector */
-	loop:
-		cmp r6,#32768 /* compara si ya realizo las iteraciones necesarias */
-		beq retorno
+	loopVer:
+		cmp r6,#5
+		beq retornar
+		ldr r1,=vector
+		add r1,r8
+		vldr s14,[r1]
+		vcvt.f64.u32 d5,s14
+		vcvt.f32.u32 s15,s14
+		vstr s15,[r1]
 		
-		movs r2,r2,lsr #1 /* shift a la derecha */
-		eorcc r2,r2,#1<<2 /* xor con bit 2 */
-		tst r2,#1
-		eorne r2,r2,#1<<22 /* xor con bit 22 */
+		add r6,r6,#1
+		add r8,r8,#4
 
+		b loopVer
 
-		str r2,[r8]
-		
-
-		add r8,#4		
-
-		add r7,#1 /* aumentar en 1 el valor original de semilla para generar otro random */
-		mov r2,r7 /* mover ese valor aumentado a r2 */
-		add r6,#1 /* incrementar contador en 1 */
-		b loop
-
-	retorno:
+	retornar:
 		mov pc, r9
+
 /*Subrutina minimo */
 minimo:
 	push {lr} 
@@ -224,4 +199,5 @@ addr_value5:
 	.data
 value5:	.float 5.0
 string:	.asciz "Floating value is: %f\n"
->>>>>>> 1ac5b3d68e99aec7c1febb7eed5e09047f106db6
+
+
