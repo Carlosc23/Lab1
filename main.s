@@ -16,6 +16,7 @@ Bienvenida:			.asciz "¡Bienvenid@ al programa! \n"
 Instrucciones: 		.asciz "Este programa genera numeros aleatorios y le muestra maximos y minimos. \nIngrese la semilla\n"
 nor:				.asciz "Su vector normalizado es:"
 semilla:			.word 0
+ingreso:			.word 0
 formato:			.asciz "%d"
 formato2:			.asciz "Su semilla es: %d\n"
 formato3:			.asciz "Su numero aleatorio es: %d\n"
@@ -23,8 +24,9 @@ formato4:			.asciz "Su decimal es: %f\n"
 formato5:			.asciz "Su maximo es: %f\n"
 formato6:			.asciz "Su minimo es: %f\n"
 formato7:			.asciz "Su promedio del vector normalizado es: %f\n"
-/*vector:				.space 262144*/
-vector:				.space 5
+pregunta:			.asciz "Presione cualquier tecla para desplegar el vector"
+aviso:			.asciz "La impresion tardara 1-2 minutos por favor sea paciente"
+vector:				.space 262144
 /***************************************************************** */
 
 /*--Seccion de codigo*/
@@ -52,21 +54,18 @@ main:
 
 	/* Mandar datos a lfsr */
 	ldr r0,= vector
-	/*mov r1,#32768*/
-	mov r1,#5
+	mov r1,#32768
 	ldr r2,= semilla
 	ldr r2,[r2]
 	bl lfsr
 
 /* Llamar subrutina para convertir a punto flotante*/
-	/*mov r2,#32768*/
-	mov r2,#5
+	mov r2,#32768
 	bl convertToFloat
 
 /* Llamar a subrutina para encontrar el minimo del vector*/
 	ldr r0,=vector
-	/*mov r1,#32768*/
-	mov r1,#5
+	mov r1,#32768
 	bl minimo
 /* Imprimir el minimo*/	
 	mov r3,r0
@@ -81,8 +80,7 @@ main:
 	
 /* Llamar a subrutina para encontrar el maximo del vector*/
 	ldr r0,=vector
-	/*mov r1,#32768*/
-	mov r1,#5
+	mov r1,#32768
 	bl maximo
 /* Imprimir el maximo*/	
 	mov r3,r0
@@ -101,8 +99,7 @@ main:
 	bl norm
 /* Llamar a subrutina para encontrar el promedio del vector*/
 	ldr r0,=vector
-	/*mov r1,#32768*/
-	mov r1,#5
+	mov r1,#32768
 	bl average
 /* Imprimir el promedio*/	
 	mov r3,r0
@@ -114,17 +111,29 @@ main:
 	vmov r2,r3,d5
 	bl printf
 	pop {r0-r3}
-	
+/*Pregunta*/
+ldr r0,=pregunta
+bl puts
+
+ldr r0,=formato	
+ldr r1,=ingreso
+bl scanf
+b desplegar
+
 /* Llamar a subrutina imprimir*/
-	/*mov r1,#32768*/
+	
+desplegar:
+	ldr r0,=aviso
+	bl puts
 	ldr r0,=nor
 	bl puts
-	mov r1,#5
+	
+	mov r1,#32768
 	ldr r0,=vector
 	bl imprimir
-
 /* Finalizar el programa*/
 end:
 		
 	mov r7,#1
 	swi 0
+	
