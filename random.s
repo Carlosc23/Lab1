@@ -29,15 +29,14 @@ lfsr:
 
 	/* genera numeros random y los aloja en vector */
 	loop:
-		/*cmp r6,#32768  compara si ya realizo las iteraciones necesarias */
 		cmp r6,r1
 		beq retorno
 		
 		movs r2,r2,lsr #1 /* shift a la derecha */
-		eorcc r2,r2,#1<<2 /* xor con bit 2 */
+		eorcc r2,r2,#1<<30/* xor con bit 2 */
 		tst r2,#1
-		eorne r2,r2,#1<<22 /* xor con bit 22 */
-
+		eorne r2,r2,#1<<31 /* xor con bit 22 */
+	
 
 		str r2,[r8]
 		
@@ -64,8 +63,8 @@ convertToFloat:
 		ldr r1,=vector
 		add r1,r8
 		vldr s14,[r1]
-		vcvt.f64.u32 d5,s14
-		vcvt.f32.u32 s15,s14
+		vcvt.f64.s32 d5,s14
+		vcvt.f32.s32 s15,s14
 		vstr s15,[r1]
 		
 		add r6,r6,#1
@@ -133,7 +132,8 @@ push {lr}
 	and r2,#0
 	and r3,#0
 	LDR R2, addr_value5		
-	VLDR S22, [R2]	
+	VLDR S22, [R2]
+	ldr r0,=vector
 	/* Ciclo para calcular el promedio*/
 	ciclo3:
 	cmp r3,r1	
@@ -152,9 +152,10 @@ push {lr}
 norm:
 push {lr}
 	/* Limpiar registros*/
-	and r2,#0
 	mov r4,#0
 	ldr r8,=vector
+	@@cmp r3,#0
+	@@rsblt	r3,r3,#0
 	vldr s4,[r3]
 	/* Ciclo que normaliza el vector*/	
 	ciclo4:
@@ -163,14 +164,14 @@ push {lr}
 	add r4,r4,#1
 	vldr s8,[r8] 
 	VDIV.F32 S6,S8,S4
+	vabs.F32 S6,S6
 	VSTR S6,[R8]
 	add r8,r8,#4
 	
 	b ciclo4
 	
 	fin4:
-	pop {pc}
-
+pop {pc}
 /* ***************************************************************** */
 /* Subrutina imprimir */
 imprimir:
@@ -180,7 +181,7 @@ imprimir:
 	mov r8,#0
 	/*Ciclo para imprimir*/
 	ciclo5:
-		/*cmp r6,#32768*/
+		/*cmp r6,#32768 */
 		cmp r6,r1
 		beq retornof
 		ldr r0,=vector
@@ -202,6 +203,6 @@ imprimir:
 addr_value5:
 	.word value5
 	.data
-value5:	.float 5.0
+value5:	.float 32768.0
 string:	.asciz "Floating value is: %f\n"
 formato4:			.asciz "Su decimal es: %f\n"

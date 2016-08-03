@@ -63,20 +63,6 @@ main:
 	mov r2,#32768
 	bl convertToFloat
 
-/* Llamar a subrutina para encontrar el minimo del vector*/
-	ldr r0,=vector
-	mov r1,#32768
-	bl minimo
-/* Imprimir el minimo*/	
-	mov r3,r0
-
-	vldr s14,[r3]
-	vcvt.f64.f32 d5,s14
-	push {r0-r3}
-	ldr r0,=formato6
-	vmov r2,r3,d5
-	bl printf
-	pop {r0-r3}
 	
 /* Llamar a subrutina para encontrar el maximo del vector*/
 	ldr r0,=vector
@@ -92,10 +78,24 @@ main:
 	vmov r2,r3,d5
 	bl printf
 	pop {r0-r3}
-	
+/* Llamar a subrutina para encontrar el minimo del vector*/
+	ldr r0,=vector
+	mov r1,#32768
+	bl minimo
+/* Imprimir el minimo*/	
+	mov r3,r0
+
+	vldr s14,[r3]
+	vcvt.f64.f32 d5,s14
+	push {r0-r3}
+	ldr r0,=formato6
+	vmov r2,r3,d5
+	bl printf
+	pop {r0-r3}
 
 /*Llamar a subrutina normalizar para el vector*/ 	
 	mov r3,r0
+	mov r1,#32768
 	bl norm
 /* Llamar a subrutina para encontrar el promedio del vector*/
 	ldr r0,=vector
